@@ -1,3 +1,8 @@
+// global consts
+const ROCK = "rock";
+const PAPER = "paper";
+const SCISSORS = "scissors";
+
 function computerPlay() {
     let rps = Math.floor(Math.random() * 3);
     switch (rps) {
@@ -45,8 +50,11 @@ function playRound(playerSelection, computerSelection) {
     }    
 }
 
-function game() {
+// lets the player play by typing out the selection, will continually
+// prompt the player until they enter a valid input
+function orig_game() {
     let playerSelection = prompt("Pick rock, paper, or scissors!");
+
     // checking for correct player input. prompt again if not valid
     while(true) {
         // make playerSelection all lowercase to allow for easier validity
@@ -90,4 +98,34 @@ function game() {
 
 }
 
-game();
+// player plays by clicking buttons as their selection
+function click_game() {
+    // button logic for rock button
+    const rbtn = document.querySelector("#rbtn");
+    rbtn.addEventListener('click', () => {
+        let round = playRound(ROCK, computerPlay());
+        console.log(round); 
+        if(round.includes("win")) {
+            pScore++;
+        }
+        if (round.includes("lose")) {
+            cScore++;
+        }
+    });
+    // button logic for button 4
+    const pbtn = document.querySelector("#pbtn");
+    pbtn.addEventListener('click', () => {
+        playRound(PAPER, computerPlay());
+    });
+    // button logic for button 4
+    const sbtn = document.querySelector("#sbtn");
+    sbtn.addEventListener('click', () => {
+        playRound(SCISSORS, computerPlay());
+    });
+}
+
+// run the actual game
+click_game();
+// run the original game (type out selection);
+//orig_game();
+
