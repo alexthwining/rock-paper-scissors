@@ -1,7 +1,9 @@
-// global consts
+// globals
 const ROCK = "rock";
 const PAPER = "paper";
 const SCISSORS = "scissors";
+let pScore = 0; // keeps tracks of player score
+let cScore = 0; // track computer score
 
 function computerPlay() {
     let rps = Math.floor(Math.random() * 3);
@@ -102,30 +104,120 @@ function orig_game() {
 function click_game() {
     // button logic for rock button
     const rbtn = document.querySelector("#rbtn");
-    rbtn.addEventListener('click', () => {
+    rbtn.addEventListener('click', () =>  {
         let round = playRound(ROCK, computerPlay());
         console.log(round); 
-        if(round.includes("win")) {
-            pScore++;
-        }
-        if (round.includes("lose")) {
-            cScore++;
-        }
+        displayScore(round);
     });
     // button logic for button 4
     const pbtn = document.querySelector("#pbtn");
     pbtn.addEventListener('click', () => {
-        playRound(PAPER, computerPlay());
+        let round = playRound(PAPER, computerPlay());
+        console.log(round); 
+        displayScore(round);
     });
     // button logic for button 4
     const sbtn = document.querySelector("#sbtn");
     sbtn.addEventListener('click', () => {
-        playRound(SCISSORS, computerPlay());
+        let round = playRound(SCISSORS, computerPlay());
+        console.log(round);
+        displayScore(round);
     });
 }
 
-// run the actual game
+// adds divs to display the score
+function displayScore(cond) {
+    const btns = document.querySelector("#btns");
+    const score = document.createElement("div");
+    score.setAttribute("id", "score");
+
+    if(cond.includes("win")) {
+        pScore++;
+        const pwin = document.createElement("div");
+        pwin.setAttribute("id", "pwin");
+        pwin.textContent = "Player wins!";
+        btns.appendChild(pwin);
+    }
+    if(cond.includes("lose")) {
+        cScore++;
+        const cwin = document.createElement("div");
+        cwin.setAttribute("id", "cwin");
+        cwin.textContent = "Computer win!";
+        btns.appendChild(cwin);
+    }
+    if(cond.includes("Draw")) {
+        const draw = document.createElement("div");
+        draw.setAttribute("id", "draw");
+        draw.textContent = "There was a draw!";
+        btns.appendChild(draw);
+    }
+    
+    score.textContent = `Player: ${pScore} - Computer ${cScore}`;
+    btns.appendChild(score);
+
+    if(pScore == 5 || cScore == 5) {
+        winMessage(btns);
+        // disable the 3 buttons so player can't play anymore
+        // const buttons = document.querySelectorAll('button');
+        // buttons.forEach((button) => {
+        //     button.disabled = true;
+        // });
+        document.querySelector("#rbtn").disabled = true;
+        document.querySelector("#pbtn").disabled = true;
+        document.querySelector("#sbtn").disabled = true;
+    }
+}
+
+// displays the win message and asks if player wants to play again
+function winMessage(btns) {
+    const winner = document.createElement("div");
+    winner.setAttribute("id", "winner");
+    if(pScore == 5) {
+        winner.textContent = "Congratulations Player, you won the best of 5!";
+    }
+
+    if(cScore == 5) {
+        winner.textContent = "Boo hoo, you suck. The computer is just better than you.";
+    }
+    btns.appendChild(winner);
+
+    const ask = document.createElement("div");
+    ask.setAttribute("id", "ask");
+    ask.textContent = "Would you like to play again? (close tab to exit the game)"
+    btns.appendChild(ask);
+    
+    const again = document.createElement("button");
+    again.setAttribute("id", "again");
+    again.innerText = "Yes I'd like to play again!"
+    btns.appendChild(again);
+
+    reset(btns);
+}
+
+// resets the game upon again button clicked
+function reset() {
+    const again = document.querySelector("#again");
+    again.addEventListener('click', () =>  {
+        document.querySelector("#rbtn").disabled = false;
+        document.querySelector("#pbtn").disabled = false;
+        document.querySelector("#sbtn").disabled = false;
+        pScore = 0;
+        cScore = 0;
+        
+        while(!null) {
+            btns.removeChild(pwin);
+            btns.removeChild(cwin);
+            btns.removeChild(score);
+            btns.removeChild(winner);
+            btns.removeChild(ask);
+            btns.removeChild(again);
+        }
+    });
+}
+
+// run the button input game
 click_game();
+
 // run the original game (type out selection);
 //orig_game();
 
